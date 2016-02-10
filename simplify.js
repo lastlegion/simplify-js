@@ -12,8 +12,8 @@
 // square distance between 2 points
 function getSqDist(p1, p2) {
 
-    var dx = p1.x - p2.x,
-        dy = p1.y - p2.y;
+    var dx = p1[0] - p2[0],
+        dy = p1[1] - p2[1];
 
     return dx * dx + dy * dy;
 }
@@ -21,18 +21,18 @@ function getSqDist(p1, p2) {
 // square distance from a point to a segment
 function getSqSegDist(p, p1, p2) {
 
-    var x = p1.x,
-        y = p1.y,
-        dx = p2.x - x,
-        dy = p2.y - y;
+    var x = p1[0],
+        y = p1[1],
+        dx = p2[0] - x,
+        dy = p2[1] - y;
 
     if (dx !== 0 || dy !== 0) {
 
-        var t = ((p.x - x) * dx + (p.y - y) * dy) / (dx * dx + dy * dy);
+        var t = ((p[0] - x) * dx + (p[1] - y) * dy) / (dx * dx + dy * dy);
 
         if (t > 1) {
-            x = p2.x;
-            y = p2.y;
+            x = p2[0];
+            y = p2[1];
 
         } else if (t > 0) {
             x += dx * t;
@@ -40,8 +40,8 @@ function getSqSegDist(p, p1, p2) {
         }
     }
 
-    dx = p.x - x;
-    dy = p.y - y;
+    dx = p[0]- x;
+    dy = p[1] - y;
 
     return dx * dx + dy * dy;
 }
@@ -101,15 +101,20 @@ function simplifyDouglasPeucker(points, sqTolerance) {
 
 // both algorithms combined for awesome performance
 function simplify(points, tolerance, highestQuality) {
-
+    //console.log(points);
+    var geojson = points;
+    var points = points.geometery.coordinates[0][0];
+    //console.log(points)
+    //console.log("wooot");
+    //console.log(points.length);
     if (points.length <= 2) return points;
 
     var sqTolerance = tolerance !== undefined ? tolerance * tolerance : 1;
 
     points = highestQuality ? points : simplifyRadialDist(points, sqTolerance);
     points = simplifyDouglasPeucker(points, sqTolerance);
-
-    return points;
+    geojson.geometery.coordinates[0][0] = points;
+    return geojson;
 }
 
 // export as AMD module / Node module / browser or worker variable
