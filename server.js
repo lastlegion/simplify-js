@@ -2,7 +2,9 @@ var restify = require("restify");
 var superagent = require("superagent");
 var server = restify.createServer();
 var simplify = require("./simplify");
+var fs = require("fs");
 var url = require("url");
+
 
 
 
@@ -26,8 +28,9 @@ function respond(req, res){
     console.log(url);
     superagent.get(url)
         .end(function(err, annotations_res){
-            //console.log(annotations.text);
+            //console.log(annotations_res);
             var annotations = JSON.parse(annotations_res.text);
+            //console.log(annotations);
             //console.log(annotations[0].geometry.coordinates[0].length);
             //console.log(annotations[0].geometry.coordinates[0].length);
             //var simplified = simplify(annotations[0], 0.2)
@@ -65,6 +68,10 @@ server.use(restify.bodyParser());
 server.use(restify.queryParser());
 server.get("/getAnnotations", respond);
 
+var api_key = "";
+
 server.listen(3000, function(){
+    api_key = JSON.parse(fs.readFileSync("config.json")).api_key; 
+
     console.log("%s listening at %s", server.name, server.url);
 });
