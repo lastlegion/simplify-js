@@ -103,7 +103,8 @@ function simplifyDouglasPeucker(points, sqTolerance) {
 function simplify(points, tolerance, highestQuality) {
     //console.log(points);
     var geojson = points;
-    var points = points.geometery.coordinates[0][0];
+    //console.log(points);
+    var points = points.geometry.coordinates[0];
     //console.log(points)
     //console.log("wooot");
     //console.log(points.length);
@@ -113,7 +114,7 @@ function simplify(points, tolerance, highestQuality) {
 
     points = highestQuality ? points : simplifyRadialDist(points, sqTolerance);
     points = simplifyDouglasPeucker(points, sqTolerance);
-    geojson.geometery.coordinates[0][0] = points;
+    geojson.geometry.coordinates[0] = points;
     return geojson;
 }
 
